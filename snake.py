@@ -4,15 +4,16 @@ import pygame as pg
 import bloque
 from constantes import *
 
+screen = pg.display.set_mode([WINDOWS] * 2)
+clock = pygame.Clock()
+culebra = pg.sprite.Group()
+cabeza = bloque.Bloque('green', culebra)
+# cola = bloque.Bloque('green', culebra)
+
+manzana = pg.sprite.GroupSingle()
+
 
 def main():
-    screen = pg.display.set_mode([WINDOWS] * 2)
-    clock = pygame.Clock()
-    culebra = pg.sprite.Group()
-    cabeza = bloque.Bloque('green', culebra)
-
-    manzana = pg.sprite.GroupSingle()
-
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
