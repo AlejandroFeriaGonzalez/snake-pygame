@@ -1,16 +1,11 @@
-import pygame
 import pygame as pg
 
-import bloque
 from constantes import *
 
 screen = pg.display.set_mode([WINDOWS] * 2)
-clock = pygame.Clock()
-culebra = pg.sprite.Group()
-cabeza = bloque.Bloque('green', culebra)
-# cola = bloque.Bloque('green', culebra)
-
-manzana = pg.sprite.GroupSingle()
+clock = pg.Clock()
+bloque = pg.Rect(0, 0, 50, 50)
+culebra = []
 
 
 def main():
@@ -24,8 +19,6 @@ def main():
             for j in range(0, WINDOWS, TILE_SIZE):
                 pg.draw.rect(screen, 'white', (i, j, 50, 50), 1)
 
-        culebra.update()
-        culebra.draw(screen)
         pg.display.flip()
 
         clock.tick(60)
