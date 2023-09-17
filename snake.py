@@ -1,13 +1,17 @@
+from random import randrange
+
 import pygame
 import pygame as pg
 
-import bloque
+from bloque import Bloque
 from constantes import *
 
 screen = pg.display.set_mode([WINDOWS] * 2)
 clock = pygame.Clock()
 culebra = pg.sprite.Group()
-cabeza = bloque.Bloque('green', culebra)
+Bloque(randrange(*RANGE), randrange(*RANGE), culebra)
+
+
 # cola = bloque.Bloque('green', culebra)
 
 manzana = pg.sprite.GroupSingle()

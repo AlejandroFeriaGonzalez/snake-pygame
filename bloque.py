@@ -6,13 +6,13 @@ from constantes import *
 
 class Bloque(pygame.sprite.Sprite):
 
-    def __init__(self, color: str, *groups):
+    def __init__(self, x, y, *groups):
         super().__init__(*groups)
 
         self.relentizacion = 10
         self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
-        self.rect = self.image.fill(color)
-        self.posicion = [randrange(*RANGE), randrange(*RANGE)]
+        self.rect = self.image.fill(color_culebra)
+        self.posicion = [x, y]
 
         self.rect.topleft = mapa[(self.posicion[0], self.posicion[1])]
 
