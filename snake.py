@@ -9,7 +9,7 @@ from constantes import *
 
 clock = pygame.time.Clock()
 # culebra = pg.sprite.Group()
-bloq = Bloque(randrange(*RANGE), randrange(*RANGE))
+bloq = Bloque(randrange(*RANGE), randrange(*RANGE), "")
 
 # cola = bloque.Bloque('green', culebra)
 
@@ -19,6 +19,7 @@ manzana = pg.sprite.GroupSingle()
 def main():
     desbloqueado = True
     cuerpo = deque([bloq])
+    direccion = ""
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -28,13 +29,13 @@ def main():
                     for parte in cuerpo:
                         if event.key == pygame.K_UP and parte.direccion != "abajo":
                             print("arriba")
-                            parte.direccion = 'arriba'
+                            direccion = 'arriba'
                         elif event.key == pygame.K_DOWN and parte.direccion != "arriba":
-                            parte.direccion = 'abajo'
+                            direccion = 'abajo'
                         elif event.key == pygame.K_LEFT and parte.direccion != "derecha":
-                            parte.direccion = 'izquierda'
+                            direccion = 'izquierda'
                         elif event.key == pygame.K_RIGHT and parte.direccion != "izquierda":
-                            parte.direccion = 'derecha'
+                            direccion = 'derecha'
                         desbloqueado = False
 
         screen.fill('black')  # limpia pantalla
@@ -45,17 +46,12 @@ def main():
         for parte in cuerpo:
             parte.update()
 
-        cuerpo.appendleft(Bloque(*cuerpo[0].posicion))
+        cuerpo.appendleft(Bloque(cuerpo[0].posicion[0], cuerpo[0].posicion[1], direccion))
         if cuerpo[0].posicion == [2, 2]:
             pass
         else:
             cuerpo.pop()
 
-
-
-        # bloq.update()
-        # culebra.update()  # draw incluido en uptade
-        # culebra.draw(screen)
         pg.display.flip()
 
         clock.tick(FPS)

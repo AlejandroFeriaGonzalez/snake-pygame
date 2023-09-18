@@ -7,7 +7,7 @@ from constantes import *
 
 class Bloque:
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, direc):
 
         self.relentizacion = 10
         self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
@@ -18,7 +18,7 @@ class Bloque:
 
         self.rect.topleft = mapa[(self.posicion[0], self.posicion[1])]
 
-        self.direccion = "arriba"  # arriba, abajo, derecha, izquierda
+        self.direccion = direc  # arriba, abajo, derecha, izquierda
 
     def update(self) -> None:
         if self.direccion == "arriba":
