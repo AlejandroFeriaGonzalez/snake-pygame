@@ -9,12 +9,12 @@ class Bloque:
 
         self.relentizacion = 10
         self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
+        self.image.fill("green")
         self.rect = self.image.get_rect()
         self.posicion = [x, y]
+        self.rect.topleft = mapa[(self.posicion[0], self.posicion[1])]
 
         self.cuerpo = deque([self])
-
-        self.rect.topleft = mapa[(self.posicion[0], self.posicion[1])]
 
         self.direccion = ""  # arriba, abajo, derecha, izquierda
 
@@ -42,4 +42,5 @@ class Bloque:
             self.cuerpo.pop()
 
         for parte in self.cuerpo:
-            pygame.draw.rect(screen, "green", parte.rect)
+            # pygame.draw.rect(screen, "green", parte.rect)  # forma 1
+            screen.blit(parte.image, parte.rect)  # forma 2
