@@ -8,6 +8,13 @@ def main():
     pygame.init()
     clock = pygame.time.Clock()
     culebra = Snake(randrange(*RANGE), randrange(*RANGE))
+    fps = 10
+
+    puntos = 0
+    fondo = pygame.font.SysFont("verdana", 15)
+    fondo_surf = fondo.render(f'Puntos: {puntos}    Velocidad: {round(clock.get_fps())}', True, "white")
+    fondo_rect = fondo_surf.get_rect()
+    fondo_rect.topleft = (5, 5)  # poscion del texto
 
     desbloqueado = True
 
@@ -32,10 +39,17 @@ def main():
             for j in range(0, WINDOWS, TILE_SIZE):
                 pygame.draw.rect(screen, 'white', (i, j, TILE_SIZE, TILE_SIZE), 1)
 
-        culebra.update()
+        colisiono = culebra.update()
+        if colisiono:
+            # dibujar puntos
+            puntos += 1
+            fps += 1
+
+        fondo_surf = fondo.render(f'Puntos: {puntos}    Velocidad: {round(clock.get_fps())}', True, "white")
+        screen.blit(fondo_surf, fondo_rect)
         pygame.display.flip()
 
-        clock.tick(FPS)
+        clock.tick(fps)
         desbloqueado = True
 
 
