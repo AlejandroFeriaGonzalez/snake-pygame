@@ -1,25 +1,22 @@
 from random import randrange
 
-import pygame as pg
 import pygame.time
 
 from bloque import Bloque
 from constantes import *
 
+pygame.init()
 clock = pygame.time.Clock()
 culebra = Bloque(randrange(*RANGE), randrange(*RANGE))
-
-manzana = pg.sprite.GroupSingle()
 
 
 def main():
     desbloqueado = True
     while True:
-        print(culebra.cuerpo)
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
                 exit()
-            if event.type == pg.KEYDOWN:
+            if event.type == pygame.KEYDOWN:
                 if desbloqueado:
                     if event.key == pygame.K_UP and culebra.direccion != "abajo":
                         culebra.direccion = 'arriba'
@@ -34,12 +31,12 @@ def main():
         screen.fill('black')  # limpia pantalla
         for i in range(0, WINDOWS, TILE_SIZE):
             for j in range(0, WINDOWS, TILE_SIZE):
-                pg.draw.rect(screen, 'white', (i, j, TILE_SIZE, TILE_SIZE), 1)
+                pygame.draw.rect(screen, 'white', (i, j, TILE_SIZE, TILE_SIZE), 1)
 
         culebra.update()
         # culebra.update()  # draw incluido en uptade
         # culebra.draw(screen)
-        pg.display.flip()
+        pygame.display.flip()
 
         clock.tick(FPS)
         desbloqueado = True
