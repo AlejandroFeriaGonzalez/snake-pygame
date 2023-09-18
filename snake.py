@@ -1,3 +1,4 @@
+from collections import deque
 from random import randrange
 
 import pygame as pg
@@ -17,28 +18,42 @@ manzana = pg.sprite.GroupSingle()
 
 def main():
     desbloqueado = True
+    cuerpo = deque([bloq])
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 exit()
             if event.type == pg.KEYDOWN:
                 if desbloqueado:
-                    if event.key == pygame.K_UP and bloq.direccion != "abajo":
-                        bloq.direccion = 'arriba'
-                    elif event.key == pygame.K_DOWN and bloq.direccion != "arriba":
-                        bloq.direccion = 'abajo'
-                    elif event.key == pygame.K_LEFT and bloq.direccion != "derecha":
-                        bloq.direccion = 'izquierda'
-                    elif event.key == pygame.K_RIGHT and bloq.direccion != "izquierda":
-                        bloq.direccion = 'derecha'
-                    desbloqueado = False
+                    for parte in cuerpo:
+                        if event.key == pygame.K_UP and parte.direccion != "abajo":
+                            print("arriba")
+                            parte.direccion = 'arriba'
+                        elif event.key == pygame.K_DOWN and parte.direccion != "arriba":
+                            parte.direccion = 'abajo'
+                        elif event.key == pygame.K_LEFT and parte.direccion != "derecha":
+                            parte.direccion = 'izquierda'
+                        elif event.key == pygame.K_RIGHT and parte.direccion != "izquierda":
+                            parte.direccion = 'derecha'
+                        desbloqueado = False
 
         screen.fill('black')  # limpia pantalla
         for i in range(0, WINDOWS, TILE_SIZE):
             for j in range(0, WINDOWS, TILE_SIZE):
                 pg.draw.rect(screen, 'white', (i, j, TILE_SIZE, TILE_SIZE), 1)
 
-        bloq.update()
+        for parte in cuerpo:
+            parte.update()
+
+        cuerpo.appendleft(Bloque(*cuerpo[0].posicion))
+        if cuerpo[0].posicion == [2, 2]:
+            pass
+        else:
+            cuerpo.pop()
+
+
+
+        # bloq.update()
         # culebra.update()  # draw incluido en uptade
         # culebra.draw(screen)
         pg.display.flip()
