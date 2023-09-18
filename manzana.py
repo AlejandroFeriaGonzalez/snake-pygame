@@ -1,5 +1,5 @@
 from random import randrange
-from constantes import *
+from conf import *
 import pygame
 
 manzana_surf = pygame.Surface((TILE_SIZE, TILE_SIZE))

@@ -1,44 +1,60 @@
+from collections import deque
 from random import randrange
 
-import pygame.time
-
-from bloque import Bloque
-from constantes import *
-
-pygame.init()
-clock = pygame.time.Clock()
-culebra = Bloque(randrange(*RANGE), randrange(*RANGE))
+import manzana
+import puntaje
+from conf import *
 
 
-def main():
-    desbloqueado = True
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            if event.type == pygame.KEYDOWN:
-                if desbloqueado:
-                    if event.key == pygame.K_UP and culebra.direccion != "abajo":
-                        culebra.direccion = 'arriba'
-                    elif event.key == pygame.K_DOWN and culebra.direccion != "arriba":
-                        culebra.direccion = 'abajo'
-                    elif event.key == pygame.K_LEFT and culebra.direccion != "derecha":
-                        culebra.direccion = 'izquierda'
-                    elif event.key == pygame.K_RIGHT and culebra.direccion != "izquierda":
-                        culebra.direccion = 'derecha'
-                    desbloqueado = False
+class Snake:
 
-        screen.fill('black')  # limpia pantalla
-        for i in range(0, WINDOWS, TILE_SIZE):
-            for j in range(0, WINDOWS, TILE_SIZE):
-                pygame.draw.rect(screen, 'white', (i, j, TILE_SIZE, TILE_SIZE), 1)
+    def __init__(self, x, y):
+        self.relentizacion = 10
+        self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
+        self.image.fill("green")
+        self.rect = self.image.get_rect()
+        self.posicion = [x, y]
+        self.rect.topleft = mapa[(self.posicion[0], self.posicion[1])]
 
-        culebra.update()
-        pygame.display.flip()
+        self.cuerpo = deque([self])
+        self.cabeza = self.cuerpo[0]
+        self.direccion = ""  # arriba, abajo, derecha, izquierda
 
-        clock.tick(FPS)
-        desbloqueado = True
+    def update(self) -> None:
 
+        if self.direccion == "arriba":
+            self.posicion[1] -= 1
+        elif self.direccion == "abajo":
+            self.posicion[1] += 1
+        elif self.direccion == "izquierda":
+            self.posicion[0] -= 1
+        elif self.direccion == "derecha":
+            self.posicion[0] += 1
+        # verifica si salio del mapa
+        if (self.posicion[0] < 1 or self.posicion[1] < 1
+                or self.posicion[0] > WINDOWS // TILE_SIZE or self.posicion[1] > WINDOWS // TILE_SIZE):
+            pygame.quit()
+            exit()
 
-if __name__ == '__main__':
-    main()
+        self.cuerpo.appendleft(Snake(self.posicion[0], self.posicion[1]))
+        if self.cabeza.posicion == manzana.manzana_posicion:
+            manzana.manzana_posicion = [randrange(*RANGE), randrange(*RANGE)]
+            manzana.manzana_rect.topleft = mapa[manzana.manzana_posicion[0], manzana.manzana_posicion[1]]
+            puntaje.puntos += 1
+        else:
+            self.cuerpo.pop()
+
+        #  detectar colision
+        posiciones_partes = []
+        for parte in self.cuerpo:
+            screen.blit(parte.image, parte.rect)  # forma 2
+            posiciones_partes.append(parte.posicion)
+        if self.cabeza.posicion in posiciones_partes[1:]:
+            exit()
+        # dibuja manzana
+        screen.blit(manzana.manzana_surf, manzana.manzana_rect)
+
+        # dibujar puntos
+        puntaje.fondo_surf = puntaje.fondo.render(f'Puntos {puntaje.puntos}', True, "white")
+        screen.blit(puntaje.fondo_surf, puntaje.fondo_rect)
+

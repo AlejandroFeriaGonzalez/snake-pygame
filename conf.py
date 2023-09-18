@@ -9,3 +9,4 @@ mapa = {(posx, posy): (i, j) for posx, i in enumerate(range(0, WINDOWS, TILE_SIZ
         enumerate(range(0, WINDOWS, TILE_SIZE), start=1)}
 
 FPS = 10
+
