@@ -18,6 +18,7 @@ manzana = pg.sprite.GroupSingle()
 def main():
     desbloqueado = True
     while True:
+        print(bloq.cuerpo)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 exit()

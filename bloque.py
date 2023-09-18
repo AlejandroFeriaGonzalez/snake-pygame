@@ -17,29 +17,8 @@ class Bloque:
         self.rect.topleft = mapa[(self.posicion[0], self.posicion[1])]
 
         self.direccion = ""  # arriba, abajo, derecha, izquierda
-        self.contador = 0
-
-    # def input(self):
-    #     keys = pygame.key.get_pressed()
-    #     if keys[pygame.K_UP] and self.direccion != "abajo":
-    #         return "arriba"
-    #     elif keys[pygame.K_DOWN] and self.direccion != "arriba":
-    #         return "abajo"
-    #     elif keys[pygame.K_LEFT] and self.direccion != "derecha":
-    #         return "izquierda"
-    #     elif keys[pygame.K_RIGHT] and self.direccion != "izquierda":
-    #         return "derecha"
-    #     # self.rect.topleft = mapa[(self.posicion[0], self.posicion[1])]
-    #     return self.direccion
-
-    def movimiento(self):
-        pass
 
     def update(self) -> None:
-        self.contador += 1
-        # self.direccion = self.input()
-
-        # if self.contador > self.relentizacion:
 
         if self.direccion == "arriba":
             self.posicion[1] -= 1
@@ -55,9 +34,7 @@ class Bloque:
             pygame.quit()
             exit()
 
-        self.contador = 0
         self.cuerpo.appendleft(Bloque(*self.posicion))
-        # print([c.rect for c in self.cuerpo])
 
         if self.cuerpo[0].posicion == [2, 2]:
             pass
