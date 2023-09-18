@@ -1,7 +1,7 @@
 import pygame
 
-WINDOWS = 800
-TILE_SIZE = 50
+WINDOWS = 780
+TILE_SIZE = 60
 RANGE = (1, (WINDOWS // TILE_SIZE) + 1)
 screen = pygame.display.set_mode([WINDOWS] * 2)
 

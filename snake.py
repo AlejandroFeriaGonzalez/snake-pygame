@@ -34,8 +34,6 @@ def main():
                 pygame.draw.rect(screen, 'white', (i, j, TILE_SIZE, TILE_SIZE), 1)
 
         culebra.update()
-        # culebra.update()  # draw incluido en uptade
-        # culebra.draw(screen)
         pygame.display.flip()
 
         clock.tick(FPS)
