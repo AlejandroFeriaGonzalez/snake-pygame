@@ -1,77 +1,77 @@
 from collections import deque
-from random import randrange
+from random import randrange, randint
 
-import pygame as pg
-import pygame.time
-
-from bloque import Bloque
-from constantes import *
-
-clock = pygame.time.Clock()
-# culebra = pg.sprite.Group()
-bloq = Bloque(randrange(*RANGE), randrange(*RANGE))
-
-# cola = bloque.Bloque('green', culebra)
-
-manzana = pg.sprite.GroupSingle()
+import manzana
+from conf import *
 
 
-def main():
-    global nuevox, nuevoy
-    desbloqueado = True
-    cuerpo = deque([bloq])
-    while True:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                exit()
-            if event.type == pg.KEYDOWN:
-                if event.key == pygame.K_UP and cuerpo[0].direccion != "abajo":
-                    cuerpo[0].direccion = 'arriba'
-                elif event.key == pygame.K_DOWN and cuerpo[0].direccion != "arriba":
-                    cuerpo[0].direccion = 'abajo'
-                elif event.key == pygame.K_LEFT and cuerpo[0].direccion != "derecha":
-                    cuerpo[0].direccion = 'izquierda'
-                elif event.key == pygame.K_RIGHT and cuerpo[0].direccion != "izquierda":
-                    cuerpo[0].direccion = 'derecha'
+class Snake:
 
-        screen.fill('black')  # limpia pantalla
-        for i in range(0, WINDOWS, TILE_SIZE):
-            for j in range(0, WINDOWS, TILE_SIZE):
-                pg.draw.rect(screen, 'white', (i, j, TILE_SIZE, TILE_SIZE), 1)
+    def __init__(self, x, y):
+        self.image = pygame.Surface((TILE_SIZE, TILE_SIZE))
+        self.image.fill("green")
+        self.rect = self.image.get_rect()
+        self.posicion = [x, y]
+        self.rect.topleft = mapa[(self.posicion[0], self.posicion[1])]
 
-        if cuerpo[0].direccion == "arriba":
-            nuevoy = cuerpo[0].posicion[1] - 1
-            nuevox = cuerpo[0].posicion[0]
-        elif cuerpo[0].direccion == "abajo":
-            nuevoy = cuerpo[0].posicion[1] + 1
-            nuevox = cuerpo[0].posicion[0]
-        elif cuerpo[0].direccion == "izquierda":
-            nuevox = cuerpo[0].posicion[0] - 1
-            nuevoy = cuerpo[0].posicion[0]
-        elif cuerpo[0].direccion == "derecha":
-            nuevox = cuerpo[0].posicion[0] + 1
-            nuevoy = cuerpo[0].posicion[0]
-        else:
-            nuevox = cuerpo[0].posicion[0]
-            nuevoy = cuerpo[0].posicion[0]
+        self.cuerpo = deque([self])
+        self.cabeza = self.cuerpo[0]
+        self.direccion = ""  # arriba, abajo, derecha, izquierda
+        self.colisiono = False
+        self.tiempo_espera_manzana = 0  # si es cero se genera nueva manzana
+
+        self.contador = 0
+
+    def update(self) -> bool:
+
+        if self.direccion == "arriba":
+            self.posicion[1] -= 1
+        elif self.direccion == "abajo":
+            self.posicion[1] += 1
+        elif self.direccion == "izquierda":
+            self.posicion[0] -= 1
+        elif self.direccion == "derecha":
+            self.posicion[0] += 1
+
         # verifica si salio del mapa
-        if (cuerpo[0].posicion[0] < 1 or cuerpo[0].posicion[1] < 1
-                or cuerpo[0].posicion[0] > WINDOWS // TILE_SIZE or cuerpo[0].posicion[1] > WINDOWS // TILE_SIZE):
+        if (self.posicion[0] < 1 or self.posicion[1] < 1
+                or self.posicion[0] > WINDOWS // TILE_SIZE or self.posicion[1] > WINDOWS // TILE_SIZE):
             pygame.quit()
             exit()
 
-        cuerpo.appendleft(Bloque(nuevox, nuevoy))
-        if cuerpo[0].posicion == [2, 2]:
-            pass
+        #  mover culebra
+        self.cuerpo.appendleft(Snake(self.posicion[0], self.posicion[1]))
+
+        if self.cabeza.posicion == manzana.manzana_posicion or self.contador <= 1:
+            self.contador += 1
+            print(self.contador)
+            while True:
+                manzana.manzana_posicion = [randrange(*RANGE), randrange(*RANGE)]
+                if manzana.manzana_posicion in [p.posicion for p in self.cuerpo]:
+                    manzana.manzana_posicion = [randrange(*RANGE), randrange(*RANGE)]
+                    print("manzana cambio de posicion")
+                else:
+                    break
+            manzana.manzana_rect.topleft = mapa[manzana.manzana_posicion[0], manzana.manzana_posicion[1]]
+            self.tiempo_espera_manzana = randint(0, 10)
+            self.colisiono = True
         else:
-            cuerpo.pop()
+            self.cuerpo.pop()
+            self.colisiono = False
 
-        for parte in cuerpo:
-            pygame.draw.rect(screen, "green", parte.rect)
-        pg.display.flip()
+        #  detectar colision
+        posiciones_partes = []
+        for parte in self.cuerpo:
+            screen.blit(parte.image, parte.rect)  # forma 2
+            posiciones_partes.append(parte.posicion)
+        # if self.cabeza.posicion in posiciones_partes[1:]:
+        #     exit()
 
-        clock.tick(FPS)
+        # dibuja manzana
+        if self.tiempo_espera_manzana == 0:
+            screen.blit(manzana.manzana_surf, manzana.manzana_rect)
+        else:
+            self.tiempo_espera_manzana -= 1 if self.tiempo_espera_manzana >= 1 else 0
+            screen.blit(manzana.manzana_surf, (800, 800))  # saca la manzana del mapa
 
-
-if __name__ == '__main__':
-    main()
+        return self.colisiono
