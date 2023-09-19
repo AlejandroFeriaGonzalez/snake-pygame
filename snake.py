@@ -20,6 +20,8 @@ class Snake:
         self.colisiono = False
         self.tiempo_espera_manzana = 0  # si es cero se genera nueva manzana
 
+        self.contador = 0
+
     def update(self) -> bool:
 
         if self.direccion == "arriba":
@@ -39,7 +41,10 @@ class Snake:
 
         #  mover culebra
         self.cuerpo.appendleft(Snake(self.posicion[0], self.posicion[1]))
-        if self.cabeza.posicion == manzana.manzana_posicion:
+
+        if self.cabeza.posicion == manzana.manzana_posicion or self.contador <= 1:
+            self.contador += 1
+            print(self.contador)
             while True:
                 manzana.manzana_posicion = [randrange(*RANGE), randrange(*RANGE)]
                 if manzana.manzana_posicion in [p.posicion for p in self.cuerpo]:
@@ -59,8 +64,8 @@ class Snake:
         for parte in self.cuerpo:
             screen.blit(parte.image, parte.rect)  # forma 2
             posiciones_partes.append(parte.posicion)
-        if self.cabeza.posicion in posiciones_partes[1:]:
-            exit()
+        # if self.cabeza.posicion in posiciones_partes[1:]:
+        #     exit()
 
         # dibuja manzana
         if self.tiempo_espera_manzana == 0:
